@@ -148,5 +148,7 @@ ggsave(filename = "/home/steve/Koofr/logs/size-transferred.png",
        width = 12.5,
        height = 6)
 
-knitr::knit("~/Koofr/logs/README.Rmd",
-            output = "~/Koofr/logs/README.md")
+# knitr::knit("~/Koofr/logs/README.Rmd",
+#             output = "~/Koofr/logs/README.md")
+
+rmarkdown::render("~/Koofr/logs/README.Rmd", output_format = "md_document")
