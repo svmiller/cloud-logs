@@ -65,24 +65,30 @@ klog_list <- set_names(kooflogs %>%
                          map(~read_delim(.x, col_names = FALSE, 
                                          delim = "\t")), basename(kooflogs))
 
-klog_list %>%
+klog_list %>% 
+  #.[c(100:106)] %>% # for debugging/tinkering
   map(~tail(., 5)) %>%
   # Ugh, I hate regex (cool as it is, though)...
-  map(~mutate(., transfer = str_extract(X1, "\\d+\\.\\d+\\s+\\w+(?=\\s*/)"))) %>%
+  map(~mutate(., stransfer = str_extract(X1, "\\d+\\.\\d+\\s+\\w+(?=\\s*/)"))) %>%
+  map(~mutate(., ftransfer = str_extract(X1, "Transferred:[^0-9]*(\\d+)") %>% 
+                str_extract("\\d+"))) %>%
+  map(~mutate(., ftransfer = if_else(!is.na(stransfer), NA, ftransfer))) %>%
   map(~mutate(., elapsed = str_remove(X1, "^.*Elapsed time:\\s*"))) %>%
   map(~mutate(., elapsed = if_else(
     str_detect(X1, "Elapsed time:"),
     str_remove(X1, "^.*Elapsed time:\\s*"),
     NA_character_
   ))) %>%
-  map(~summarize(., transfer = first(na.omit(transfer)),
+  map(~summarize(., ftransfer = first(na.omit(ftransfer)),
+                 stransfer = first(na.omit(stransfer)),
                  elapsed  = first(na.omit(elapsed)))) %>%
   bind_rows(.id = "log") %>%
+  mutate(ftransfer = as.numeric(ftransfer)) %>%
   mutate(date = as_date(str_sub(log, 1, 10))) %>% 
   mutate(sec = to_seconds(elapsed)) %>%
-  mutate(size = to_mbs(transfer)) %>%
+  mutate(size = to_mbs(stransfer)) %>%
   mutate(dry = if_else(date <= ymd(20250602), 1, 0)) %>%
-  select(log:elapsed, date, dry, sec, size) -> Data
+  select(log:elapsed, date, dry, sec, ftransfer, size) -> Data
 
 # Save, for later...
 write_csv(Data, "~/Koofr/logs/log-summary.csv")
@@ -143,6 +149,36 @@ Data %>%
 
 ggsave(filename = "/home/steve/Koofr/logs/size-transferred.png",
        plot = p2,
+       units = "in",
+       dpi = 300,
+       width = 12.5,
+       height = 6)
+
+
+med_ftransfer <- median(Data$ftransfer)
+mean_ftransfer <- mean(Data$ftransfer)
+
+Data %>%
+  ggplot(.,aes(as.Date(date), sqrt(ftransfer))) +
+  geom_vline(xintercept = ymd(20250602), linetype = 'dashed') +
+  geom_line(linewidth = 1.1) +
+  theme_steve() +
+  annotate("rect",
+           xmin = min(Data$date),
+           xmax = as_date("2025-06-02"),
+           ymin = -Inf, ymax = Inf,
+           alpha = 0.4, fill = g_c("su_sky")) +
+  scale_x_date(date_breaks = "1 month",
+               date_labels = "%b\n%Y",
+               limits = c(ymd(20250501, today()))) +
+  labs(title = "The Number of Files Transferred in Syncing Daily Work to the Cloud",
+       subtitle = paste0("The typical day includes a transfer of ", med_ftransfer, " files of various sizes. Some days may have a lot of file transfers, however, as indicated by the mean (", round(mean_ftransfer, 2),")."),
+       caption = paste0('Repo: https://github.com/svmiller/cloud-logs.\nFor context about my setup: https://svmiller.com/blog/2025/05/cloud-storage-european-style/\nShaded area communicates "dry runs" as I tinkered with my transition from Dropbox.\nLast updated: ', dateform(today())),
+       x = "", y = "The Number Files of Transferred in a Day (Square-Root Transformed)") -> p3
+
+
+ggsave(filename = "/home/steve/Koofr/logs/files-transferred.png",
+       plot = p3,
        units = "in",
        dpi = 300,
        width = 12.5,

@@ -32,6 +32,10 @@ automated procedure that does this every morning and uploads to Github.
 
 ![](size-transferred.png)
 
+## Total Number of Files Transferred, Daily
+
+![](files-transferred.png)
+
 ## Summary of Past 14 Days
 
 ```{r, echo=F, message = F}
