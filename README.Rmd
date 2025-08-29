@@ -41,5 +41,5 @@ automated procedure that does this every morning and uploads to Github.
 ```{r, echo=F, message = F}
 read_csv("~/Koofr/logs/log-summary.csv") %>%
   tail(14) %>%
-  select(date, transfer, elapsed)
+  select(date, ftransfer, stransfer, elapsed)
 ```
