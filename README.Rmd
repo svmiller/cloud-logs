@@ -17,7 +17,12 @@ library(tidyverse)
 # A Summary of Daily Cloud Syncs
 
 This is a silly project of mine to track/automate my daily work activity and
-syncs to my cloud storage. You can [read a bit more about my setup here](https://svmiller.com/blog/2025/05/cloud-storage-european-style/).
+syncs to my cloud storage. You can [read a bit more about my setup here](https://svmiller.com/blog/2025/05/cloud-storage-european-style/). 
+Every day, I sync my main cloud storage to a backup cloud provider and log the
+files transferred, the total size of files transferred, and the time elapsed to
+sync my main cloud storage provider to my backup. This script and repository
+gathers the last two measures and formats them for presentation. I have an
+automated procedure that does this every morning and uploads to Github.
 
 ## Time Elapsed Syncing to Cloud, Daily
 
