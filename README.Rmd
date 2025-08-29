@@ -1,0 +1,36 @@
+---
+output: github_document
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+
+```{r loadstuff, echo=FALSE, results="hide", message=FALSE}
+library(tidyverse)
+```
+
+# A Summary of Daily Cloud Syncs
+
+This is a silly project of mine to track/automate my daily work activity and
+syncs to my cloud storage. You can [read a bit more about my setup here](https://svmiller.com/blog/2025/05/cloud-storage-european-style/).
+
+## Time Elapsed Syncing to Cloud, Daily
+
+![](time-elapsed.png)
+
+## Total Size of Files Transferred, Daily
+
+![](size-transferred.png)
+
+## Summary of Past 14 Days
+
+```{r, echo=F, message = F}
+read_csv("~/Koofr/logs/log-summary.csv") %>%
+  tail(14) %>%
+  select(date, transfer, elapsed)
+```
