@@ -151,4 +151,6 @@ ggsave(filename = "/home/steve/Koofr/logs/size-transferred.png",
 # knitr::knit("~/Koofr/logs/README.Rmd",
 #             output = "~/Koofr/logs/README.md")
 
+# I think this is the way it has to be..
+Sys.setenv(RSTUDIO_PANDOC="/usr/lib/rstudio/resources/app/bin/quarto/bin/tools/x86_64")
 rmarkdown::render("~/Koofr/logs/README.Rmd", output_format = "md_document")
