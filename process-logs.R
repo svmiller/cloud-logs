@@ -141,7 +141,7 @@ Data %>%
                limits = c(ymd(20250501, today()))) +
   labs(title = "The Size of Files Transferred in Syncing Daily Work to the Cloud",
        subtitle = paste0("The median size of files synced to the cloud is ", 
-                         round(med_size, 2), " megabytes, though high-volume transfers in a given day push the mean to around a gigabyte (mean: ", 
+                         round(med_size, 2), " megabytes, though high-volume transfers in a given day may inflate the average (mean: ", 
                          format(round(mean_size, 2), big.mark = ","), " MBs)."),
        caption = paste0('Repo: https://github.com/svmiller/cloud-logs.\nFor context about my setup: https://svmiller.com/blog/2025/05/cloud-storage-european-style/\nShaded area communicates "dry runs" as I tinkered with my transition from Dropbox.\nLast updated: ', dateform(today())),
        x = "", y = "Total Size of Files Transferred (in GBs)") -> p2
