@@ -65,6 +65,8 @@ klog_list <- set_names(kooflogs %>%
                          map(~read_delim(.x, col_names = FALSE, 
                                          delim = "\t")), basename(kooflogs))
 
+klog_list[["2026-08-11.log"]] <- NULL # womp womp, don't know what happened.
+
 klog_list %>% 
   #.[c(100:106)] %>% # for debugging/tinkering
   map(~tail(., 5)) %>%
